@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>민혁 갠방 시그 리스트</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --bg: #050505;
+            --text: #ffffff;
+            --accent: #2D7FF9;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border: #333;
+            --price-text: #9fb8ff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; transition: 0.3s; }
+        body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; max-width: 600px; margin: auto; }
+
+        .header-wrap { display:flex; justify-content:space-between; align-items:flex-start; margin:40px 0 35px; }
+        .header h1 { font-size:2.5rem; font-weight:900; letter-spacing:-2px; text-transform:uppercase; cursor:pointer; line-height:1;
+            background:linear-gradient(90deg, #ffffff 0%, #ffffff 35%, #7fb6ff 50%, #ffffff 65%, #ffffff 100%);
+            background-size:250% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:shine 7s linear infinite; }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        [data-theme='light'] { --bg:#fafafa; --text:#111111; --accent:#2D7FF9; --card-bg:#ffffff; --border:#ececec; --price-text: #555555; }
+        [data-theme='light'] .header h1 { background:linear-gradient(90deg, #111111 0%, #111111 35%, #2D7FF9 50%, #111111 65%, #111111 100%); background-size:250% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+.header h1{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:2.5rem;
+    font-weight:900;
+    letter-spacing:-2px;
+    text-transform:uppercase;
+    cursor:pointer;
+    line-height:1;
+    background:linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #ffffff 35%,
+        #7fb6ff 50%,
+        #ffffff 65%,
+        #ffffff 100%
+    );
+    background-size:250% auto;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:shine 7s linear infinite;
+}
+
+.live{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.65rem;
+    letter-spacing:.25em;
+    font-weight:700;
+    color:var(--accent);
+    -webkit-text-fill-color:var(--accent);
+    opacity:.9;
+}
+
+.live::before{
+    content:"";
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 rgba(45,127,249,.6);
+    animation:livePulse 2s infinite;
+}
+
+@keyframes livePulse{
+    0%{
+        transform:scale(1);
+        box-shadow:0 0 0 0 rgba(45,127,249,.6);
+    }
+    70%{
+        transform:scale(1.2);
+        box-shadow:0 0 0 10px rgba(45,127,249,0);
+    }
+    100%{
+        transform:scale(1);
+        box-shadow:0 0 0 0 rgba(45,127,249,0);
+    }
+}
+
+        #theme-toggle { background:none; border:none; color:#777; font-size:.72rem; font-weight:700; letter-spacing:.25em; cursor:pointer; padding:0; }
+        #theme-toggle:hover { color:var(--text); }
+        
+        .search-box { width: 100%; margin-bottom: 20px; }
+        #search { width:100%; background:transparent; border:none; border-bottom:1px solid rgba(255,255,255,.12); color:var(--text); padding:14px 2px; outline:none; font-size:.95rem; }
+        [data-theme='light'] #search { border-bottom:1px solid rgba(0,0,0,.12); }
+[data-theme='light'] .live{
+    color:#2D7FF9;
+    -webkit-text-fill-color:#2D7FF9;
+}
+        #search:focus { border-bottom-color:#2D7FF9; }
+        
+        .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
+        .btn { padding: 8px 16px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+        .btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        .list { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:40px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; transition: .25s ease; display: flex; flex-direction: column; }
+        .card:hover { transform:translateY(-2px); border-color:#2D7FF9; }
+        .card img { width:100%; aspect-ratio:16/9; object-fit:cover; transition:.35s ease; }
+        .card:hover img { transform:scale(1.04); }
+.card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: .25s ease;
+    display: flex;
+    flex-direction: column;
+}
+.card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        to top,
+        rgba(45,127,249,.12),
+        transparent 60%
+    );
+    opacity:0;
+    transition:.35s;
+    pointer-events:none;
+}
+
+.card:hover::after{
+    opacity:1;
+}
+
+        .info { padding:12px; display:flex; flex-direction:column; align-items:center; gap:6px; flex-grow:1; text-align: center; }
+        .name { font-size:.92rem; font-weight:600; line-height:1.45; }
+        .price { color: var(--price-text); font-size:.82rem; font-weight:700; letter-spacing:.05em; }
+        footer { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <!-- (이하 동일하므로 생략 - 이전 답변과 동일한 스크립트 그대로 사용 가능) -->
+    <div class="header-wrap">
+        <header class="header">
+         <h1 onclick="resetAll()">
+    민혁 갠방 시그 리스트
+    <span class="live">LIVE</span>
+</h1>
+        </header>
+        <button id="theme-toggle">◐</button>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="search" placeholder="시그 검색...">
+    </div>
+
+    <div class="filters" id="categories">
+        <button class="btn active" data-filter="all">ALL</button>
+        <button class="btn" data-filter="5천대">5천대</button>
+        <button class="btn" data-filter="6천대">6천대</button>
+        <button class="btn" data-filter="7천대">7천대</button>
+        <button class="btn" data-filter="8천대">8천대</button>
+        <button class="btn" data-filter="9천대">9천대</button>
+        <button class="btn" data-filter="1만대">1만대</button>
+        <button class="btn" data-filter="VIP">VIP</button>
+    </div>
+
+    <div class="list" id="productList"></div>
+
+    <footer>민혁 갠방 시그 리스트</footer>
+
+    <script>
+        const allSigs = [
+            { name: "이쁜이", price: 5000, category: "5천대" },
+            { name: "턱밑에서브이", price: 5010, category: "5천대" },
+            { name: "고양이송", price: 5100, category: "5천대" },
+            { name: "아웅다웅", price: 12500, category: "1만대" },
+            { name: "햄토리", price: 5030, category: "5천대" },
+            { name: "이라이라", price: 5200, category: "5천대" },
+            { name: "모찌송", price: 5300, category: "5천대" },
+            { name: "귀요미", price: 5400, category: "5천대" },
+            { name: "오또카지", price: 5500, category: "5천대" },
+            { name: "외모쳌", price: 5800, category: "5천대" },
+            { name: "뾱뾱이", price: 5900, category: "5천대" },
+            { name: "키세스", price: 5600, category: "5천대" },
+            { name: "킹받쥬", price: 6300, category: "6천대" },
+            { name: "솜사탕", price: 6400, category: "6천대" },
+            { name: "덴파덴파", price: 5060, category: "5천대" },
+            { name: "사랑받을준완", price: 5040, category: "5천대" },
+            { name: "테디베어", price: 5020, category: "5천대" },
+            { name: "삐끼삐끼", price: 6800, category: "6천대" },
+            { name: "빛을따라서", price: 5050, category: "5천대" },
+            { name: "너랑사귈래", price: 7200, category: "7천대" },
+            { name: "리와인드", price: 5070, category: "5천대" },
+            { name: "나의첫사랑에게", price: 5110, category: "5천대" },
+            { name: "트월킹덕", price: 11700, category: "1만대" },
+            { name: "또치또치", price: 7700, category: "7천대" },
+            { name: "같은곳에서", price: 5120, category: "5천대" },
+            { name: "도마도마", price: 5700, category: "5천대" },
+            { name: "사쿠란보", price: 6000, category: "6천대" },
+            { name: "퍼킹뱅어", price: 6100, category: "6천대" },
+            { name: "핫해", price: 6200, category: "6천대" },
+            { name: "레몬탱", price: 5080, category: "5천대" },
+            { name: "포켓몬스터", price: 6500, category: "6천대" },
+            { name: "러브쉐이크", price: 6700, category: "6천대" },
+            { name: "우리집", price: 6900, category: "6천대" },
+            { name: "폼미쳣다", price: 7000, category: "7천대" },
+            { name: "진압해", price: 7100, category: "7천대" },
+            { name: "팬서비스", price: 7300, category: "7천대" },
+            { name: "패스트카", price: 9600, category: "9천대" },
+            { name: "버터플라이", price: 8000, category: "8천대" },
+            { name: "콩나물", price: 8200, category: "8천대" },
+            { name: "미국가있어", price: 8500, category: "8천대" },
+            { name: "웨이백홈", price: 8900, category: "8천대" },
+            { name: "캐치캐치", price: 9100, category: "9천대" },
+            { name: "우리집", price: 10500, category: "1만대" },
+            { name: "사기캐", price: 13700, category: "1만대" },
+            { name: "너뿐이야", price: 11100, category: "1만대" },
+            { name: "부처님손바닥", price: 7600, category: "7천대" },
+            { name: "너와의모든지금", price: 8700, category: "8천대" },
+            { name: "내가S넌N", price: 9200, category: "9천대" },
+            { name: "벌룬인러브", price: 9300, category: "9천대" },
+            { name: "결국너야", price: 9400, category: "9천대" },
+            { name: "할것", price: 9500, category: "9천대" },
+            { name: "러브샷", price: 8800, category: "8천대" },
+            { name: "우치다", price: 11000, category: "1만대" },
+            { name: "날라리", price: 7800, category: "7천대" },
+            { name: "홀리몰리", price: 10700, category: "1만대" },
+            { name: "슈퍼그럼요", price: 11300, category: "1만대" },
+            { name: "첫만남", price: 8400, category: "8천대" },
+            { name: "여우", price: 12100, category: "1만대" },
+            { name: "티라미수케잌", price: 10800, category: "1만대" },
+            { name: "핑크레이디", price: 10400, category: "1만대" },
+            { name: "아헤가오", price: 12200, category: "1만대" },
+            { name: "체온", price: 10900, category: "1만대" },
+            { name: "꽃", price: 13200, category: "1만대" },
+            { name: "버터플라이", price: 13300, category: "1만대" },
+            { name: "사마우코이", price: 9900, category: "9천대" },
+            { name: "뛰어", price: 12900, category: "1만대" },
+            { name: "물만난광어", price: 11500, category: "1만대" },
+            { name: "원샷", price: 9000, category: "9천대" },
+            { name: "할리우드액션", price: 8100, category: "8천대" },
+            { name: "이꾸욧", price: 7900, category: "7천대" },
+            { name: "제로투", price: 7400, category: "7천대" },
+            { name: "오빠가알려줄게", price: 7500, category: "7천대" },
+            { name: "헨타이", price: 8300, category: "8천대" },
+            { name: "엉큰녀", price: 13000, category: "1만대" },
+            { name: "몸매", price: 11400, category: "1만대" },
+            { name: "우유", price: 11200, category: "1만대" },
+            { name: "계엄령", price: 13800, category: "1만대" },
+            { name: "랜덤", price: 10000, category: "1만대" },
+            { name: "간절한한마디", price: 10000, category: "1만대" },
+            { name: "바람디져", price: 11900, category: "1만대" },
+            { name: "흡연", price: 11900, category: "1만대" },
+            { name: "홀드업", price: 12000, category: "1만대" },
+            { name: "금연", price: 12000, category: "1만대" },
+            { name: "뱅뱅뱅", price: 11800, category: "1만대" },
+            { name: "몽타주", price: 12300, category: "1만대" },
+            { name: "길티", price: 12600, category: "1만대" },
+            { name: "꼬마선장", price: 10600, category: "1만대" },
+            { name: "불도저", price: 12400, category: "1만대" },
+            { name: "광우스키", price: 11600, category: "1만대" },
+            { name: "살이있네", price: 10100, category: "1만대" },
+            { name: "촉촉착착", price: 10200, category: "1만대" },
+            { name: "케이춤", price: 9700, category: "9천대" },
+            { name: "마티니", price: 9800, category: "9천대" },
+            { name: "애즈업", price: 13100, category: "1만대" },
+            { name: "레드레드", price: 12700, category: "1만대" },
+            { name: "크로우즈제로", price: 12800, category: "1만대" },
+            { name: "시바레스코", price: 13900, category: "1만대" },
+            { name: "널떠중", price: 5090, category: "5천대" },
+            { name: "루나솔라", price: 13400, category: "1만대" },
+            { name: "무한성", price: 13500, category: "1만대" },
+            { name: "백갑숙도", price: 10300, category: "1만대" },
+            { name: "지코토닉", price: 13600, category: "1만대" },
+            { name: "호텔파티", price: 8600, category: "8천대" },
+            { name: "VIP", price: 100000, category: "VIP" }
+        ];
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const doc = document.documentElement;
+            const theme = doc.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            doc.setAttribute('data-theme', theme);
+        });
+
+        function updateList() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const activeBtn = document.querySelector('.btn.active');
+            const filter = activeBtn ? activeBtn.dataset.filter : 'all';
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+            
+            allSigs.filter(item => {
+                const matchesQuery = item.name.toLowerCase().includes(query);
+                const matchesFilter = (filter === 'all' || item.category === filter);
+                return matchesQuery && matchesFilter;
+            })
+         
+
+        function resetAll() {
+            document.getElementById('search').value = '';
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-filter="all"]').classList.add('active');
+            updateList();
+        }
+
+        document.querySelectorAll('.btn').forEach(btn => btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            updateList();
+        }));
+
+        document.getElementById('search').addEventListener('input', updateList);
+        updateList();
+    </script>
+</body>
+</html>
